@@ -1,8 +1,7 @@
 // ==UserScript==
 // @name         Video Unlocker
 // @description  绕过视频播放限制
-// @match        *://*.cloudfront.net/*
-// @match        *://k5j7u.com/*
+// @match        *://*/*
 // ==/UserScript==
 (function() {
     'use strict';
