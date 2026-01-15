@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         5hfg2m1 Video Unlocker
 // @namespace    https://github.com/video_grabber_91
-// @version      1.0
+// @version      1.1
 // @description  绕过 5hfg2m1.com 视频试看限制，解锁完整视频播放
 // @author       video_grabber_91
 // @match        *://*.5hfg2m1.com/*
@@ -89,14 +89,27 @@
         }
     }
 
-    // 隐藏试看结束弹窗
+    // 隐藏试看结束弹窗（精确定位，不影响视频播放器）
     function hideTipBox() {
-        document.querySelectorAll('*').forEach(el => {
-            const text = el.innerText || '';
-            if ((text.includes('试看结束') || text.includes('钻石解锁')) && el.children.length < 10) {
-                el.style.visibility = 'hidden';
-            }
-        });
+        // 方法1：隐藏 .buy-payType-list 的父容器
+        const videoPalyer = document.querySelector('.video-palyer');
+        if (videoPalyer) {
+            [...videoPalyer.children].forEach(child => {
+                if (child.querySelector('.buy-payType-list')) {
+                    child.style.display = 'none';
+                    console.log('[5hfg2m1 Unlocker] 付费弹窗已隐藏');
+                }
+            });
+        }
+
+        // 方法2：点击「跳过预览」按钮
+        const skipPreviewBtn = [...document.querySelectorAll('*')].find(el => 
+            el.innerText?.trim() === '跳过预览' && el.offsetWidth > 0
+        );
+        if (skipPreviewBtn) {
+            skipPreviewBtn.click();
+            console.log('[5hfg2m1 Unlocker] 点击跳过预览');
+        }
     }
 
     // 主逻辑
@@ -120,7 +133,7 @@
             });
         }
 
-        // 持续隐藏弹窗
+        // 持续尝试隐藏弹窗和点击跳过预览
         if (unlockAttempted) {
             hideTipBox();
         }
